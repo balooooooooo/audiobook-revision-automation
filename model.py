@@ -1,12 +1,22 @@
 import whisper
-from torch.cuda import is_available
+import json
 
-model = whisper.load_model("large")
 
-audio = whisper.load_audio("C:/sources/prepisy/vanocni-povidky-ze-sumavy-klosterman/01_Vanoce_pod_snehem.mp3")
-print("Starting transcribtion...")
-result = model.transcribe(audio,language="cs")
-print(result["text"])
+def main():
+    with open("config.json", "r") as f:
+        CONFIG = json.load(f)
+    print("Loading model...")
+    model = whisper.load_model("large")
+    audio = whisper.load_audio(CONFIG["audio_source"])
 
-with open("result.txt", "w") as f:
-    f.write(result["text"])
+    print("Starting transcription...")
+    result = model.transcribe(audio, language="cs")
+
+    with open("result.txt", "w") as f:
+        f.write(result["text"])
+
+    print("Result exported to target folder.")
+
+
+if __name__ == '__main__':
+    main()
