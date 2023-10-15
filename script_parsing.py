@@ -13,16 +13,17 @@ def get_text():
     doc = fitz_new.open(CONFIG["text_source"])
     for page in doc:
         blocks = page.get_text("dict", flags=11)["blocks"]
-        for b in blocks:  # iterate through the text blocks
-            for line in b["lines"]:  # iterate through the text lines
+        for j, block in enumerate(blocks):  # iterate through the text blocks
+            for line in block["lines"]:  # iterate through the text lines
                 for i, span in enumerate(line["spans"]):  # iterate through the text spans
                     print("")
-                    print(f'{span["text"] = }, {span["flags"] = }, {span["font"] = }, {span["size"] = }')
+                    # print(f'{span["text"] = }, {span["flags"] = }, {span["font"] = }, {span["size"] = }')
                     if (span["font"] == "TimesNewRomanPS-BoldMT" and span["text"].isupper() and
                             "vydavatelství" not in span["text"].lower() and
                             "kniha" not in span["text"].lower() and "čte" not in span["text"].lower()):
-                        chapters.append({span["text"]+"\n": {"beginning": line["spans"][i+1]["text"],
+                        chapters.append({span["text"]+"\n": {"beginning": blocks[j+1]["lines"][0]["spans"][0]["text"],
                                                           "end": get_ending()}})
+                        # print(chapters)
                     if span["size"] == 14 and span["color"] == 0:
                         text += span["text"]
 
